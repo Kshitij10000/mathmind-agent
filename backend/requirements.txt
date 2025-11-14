@@ -10,3 +10,4 @@ datasets
 qdrant-client==1.15.1
 tavily-python==0.7.13
 langchain-mcp-adapters==0.1.13
+dspy==3.0.4
