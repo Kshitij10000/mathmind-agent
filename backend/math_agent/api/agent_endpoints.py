@@ -41,8 +41,14 @@ async def start_agent_run(request: AskRequest):
             config=config
         )
         
-        # If no interrupt, it finished (e.g., guardrail fail)
-        generated_answer = final_state.get("answer", "Graph finished without answer.")
+        # Check if the question was rejected by the guardrail
+        if final_state.get("is_valid") is False:
+            generated_answer = "I can only help with math questions. Please ask a math-related question."
+        # If no interrupt and no answer, it might have finished for another reason
+        elif "answer" not in final_state:
+            generated_answer = "Graph finished without answer."
+        else:
+            generated_answer = final_state.get("answer", "Graph finished without answer.")
 
     except GraphInterrupt:
         # This is the expected path! The graph is now paused.
@@ -70,7 +76,7 @@ async def resume_agent_run(request: FeedbackRequest):
     # This is correct. You 'resume' by invoking again with the
     # new state values. The checkpointer handles the rest.
     await langgraph_app.ainvoke(
-        {"finale_answer": request.final_answer}, # <-- See bug #3
+        {"final_answer": request.final_answer},
         config=config
     )
     

@@ -1,8 +1,8 @@
 # backend\math_agent\llm\agent.py
 from typing import TypedDict, Literal
-from math_agent.llm.services import generate_solution
+from math_agent.llm.services import generate_solution 
 from math_agent.llm.gaurdrails import run_input_gaurdrails, run_output_gaurdrail
-from math_agent.llm.kb_loader import search_knowledge_base
+from math_agent.llm.kb_loader import search_knowledge_base , add_to_knowledge_base
 from langgraph.graph import StateGraph, END
 from langgraph.checkpoint.memory import MemorySaver
 from math_agent.llm.mcp_servers import search_web_mcp
@@ -25,6 +25,7 @@ def input_gaurdrail_node(state: AgentState):
     """runs the input gaurdraials"""
     question = state["question"]
     is_valid = run_input_gaurdrails(question)
+    print(is_valid)
     return {"is_valid": is_valid}
 
 async def router_node(state: AgentState):
@@ -76,14 +77,22 @@ def human_in_loop_node(state: AgentState):
     # Pass through the state unchanged - the interrupt happens at the graph level
     return {}
 
-def self_learning_node(state: AgentState):
+async def self_learning_node(state: AgentState):
     """
-    'Learns' the final human-approved answer.
-    (This is where you'd add the 'final_answer' back to Qdrant)
+    'Learns' the final human-approved answer by adding it to the KB.
     """
-    print("[Self-Learning] Human feedback received. (Would add to KB here)")
-    # In a real app, you'd call a function:
-    # add_to_knowledge_base(state["question"], state["final_answer"])
+    print("[Self-Learning] Human feedback received. Adding to Knowledge Base...")
+    
+    # Get the data from the state
+    question = state.get("question")
+    final_answer = state.get("final_answer") # Using the fixed 'final_answer' key
+
+    if question and final_answer:
+        # This is the "learning" step
+        await add_to_knowledge_base(question, final_answer)
+    else:
+        print("[Self-Learning] Skipping: Missing question or final_answer in state.")
+
     return {}
 
 # --- 3. Define the Graph's Edges (Conditional Logic) ---
