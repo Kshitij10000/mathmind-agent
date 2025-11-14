@@ -1,52 +1,84 @@
 const API_BASE_URL = 'http://127.0.0.1:8000' // Your backend URL
 
-
-const extractNumber = (text) => {
-  // Remove all non-digit characters and extract first number
-  const numbers = text.match(/\d+/)
-  if (numbers) {
-    return parseInt(numbers[0], 10)
-  }
-  return null
-}
-
 /**
- * Sends a request to the /math endpoint to get multiplication table
- * @param {string} userInput - User's message (e.g., "2", "table of 5")
- * @returns {Promise<string>} - Formatted multiplication table as string
+ * Sends a math question to the agent API
+ * @param {string} question - User's math question
+ * @returns {Promise<{answer: string, threadId: string}>} - Response with answer and thread ID
  */
-export const sendMessage = async (userInput) => {
+export const sendMessage = async (question) => {
   try {
-    // Extract number from user input
-    const number = extractNumber(userInput)
-    
-    if (!number || number < 1) {
-      throw new Error('Please enter a valid number (e.g., "2" or "table of 5")')
+    if (!question || !question.trim()) {
+      throw new Error('Please enter a question')
     }
 
-    // Call the /math endpoint with number as query parameter
-    const response = await fetch(`${API_BASE_URL}/math?number=${number}`, {
+    // Call the /agent/start endpoint
+    const response = await fetch(`${API_BASE_URL}/agent/start`, {
       method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         'accept': 'application/json',
       },
+      body: JSON.stringify({
+        question: question.trim()
+      }),
     })
 
     if (!response.ok) {
-      throw new Error(`Failed to get multiplication table: ${response.status}`)
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(
+        errorData.detail || `Failed to get response: ${response.status}`
+      )
     }
 
     const data = await response.json()
     
-    // The API returns { "message": ["2 x 1 = 2", "2 x 2 = 4", ...] }
-    // Format it as a readable string
-    if (data.message && Array.isArray(data.message)) {
-      return `Multiplication table for ${number}:\n\n${data.message.join('\n')}`
+    // The API returns { "thread_id": "...", "generated_answer": "..." }
+    return {
+      answer: data.generated_answer || 'No answer received',
+      threadId: data.thread_id
     }
-    
-    return 'No response received'
   } catch (error) {
     console.error('API Error:', error)
+    throw error
+  }
+}
+
+/**
+ * Resumes an agent run with edited/approved answer
+ * @param {string} threadId - Thread ID from the initial request
+ * @param {string} finalAnswer - The edited/approved final answer
+ * @returns {Promise<{status: string, message: string}>} - Response with status
+ */
+export const resumeAgent = async (threadId, finalAnswer) => {
+  try {
+    if (!threadId || !finalAnswer || !finalAnswer.trim()) {
+      throw new Error('Thread ID and final answer are required')
+    }
+
+    // Call the /agent/resume endpoint
+    const response = await fetch(`${API_BASE_URL}/agent/resume`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'accept': 'application/json',
+      },
+      body: JSON.stringify({
+        thread_id: threadId,
+        final_answer: finalAnswer.trim()
+      }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(
+        errorData.detail || `Failed to resume agent: ${response.status}`
+      )
+    }
+
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error('Resume API Error:', error)
     throw error
   }
 }
