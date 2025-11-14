@@ -1,6 +1,7 @@
 # backend\math_agent\llm\agent.py
 from typing import TypedDict, Literal
-from math_agent.llm.services import run_input_gaurdrails, generate_solution
+from math_agent.llm.services import generate_solution
+from math_agent.llm.gaurdrails import run_input_gaurdrails, run_output_gaurdrail
 from math_agent.llm.kb_loader import search_knowledge_base
 from langgraph.graph import StateGraph, END
 from langgraph.checkpoint.memory import MemorySaver
@@ -55,6 +56,17 @@ def generate_solution_node(state: AgentState):
     answer = generate_solution(question, context)
     return {"answer": answer}
 
+def output_gaurdrail_node(state: AgentState):
+    """run the output gaurdrail"""
+    answer = state["answer"]
+    is_valid = run_output_gaurdrail(answer)
+    if not is_valid:
+        return {
+            "answer": "I'm sorry, I was unable to generate a valid solution for this problem."
+        }
+    return {}
+
+
 def human_in_loop_node(state: AgentState):
     """
     Human-in-the-loop interrupt node.
@@ -96,10 +108,9 @@ def build_math_agent():
     workflow.add_node("router", router_node)
     workflow.add_node("web_search", web_search_node)
     workflow.add_node("generate_solution", generate_solution_node)
-
+    workflow.add_node("output_gaurdrail", output_gaurdrail_node)
     # This node will PAUSE the graph for human feedback
     workflow.add_node("human_in_loop", human_in_loop_node)
-
     workflow.add_node("self_learning", self_learning_node)
 
     # --- 5. Wire the Nodes and Edges ---
@@ -129,10 +140,14 @@ def build_math_agent():
 
     # Web search flows to generation
     workflow.add_edge("web_search", "generate_solution")
+    
+    # After generation , run the output gaurdrail
+    workflow.add_edge("generate_solution", "output_gaurdrail")
 
-    # After generation, pause for HITL
-    workflow.add_edge("generate_solution", "human_in_loop")
-
+    # After the output guardrail, go to the human-in-loop
+    workflow.add_edge("output_gaurdrail", "human_in_loop")
+    
+    # --- END OF CHANGES ---
     # After the human provides feedback (resuming the graph),
     # run the self-learning node
     workflow.add_edge("human_in_loop", "self_learning")
