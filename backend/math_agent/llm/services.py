@@ -14,7 +14,7 @@ def generate_solution(question: str, context: str) -> str:
     Generate a clear, step-by-step solution. If the context is not relevant,
     say you could not find a good answer.
     Dont greet the student , be like a actual professor who is good and
-    has teacher like attitude.
+    has teacher like attitude
     CONTEXT:
     {context}
 

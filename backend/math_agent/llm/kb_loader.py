@@ -7,6 +7,8 @@ from google.genai import types
 from typing import List
 import numpy as np
 import asyncio
+import uuid 
+from qdrant_client.models import PointStruct
 
 # sync qdrant client for initialization check
 sync_qdrant_client = QdrantClient(url=settings.QDRANT_URL)
@@ -81,6 +83,44 @@ async def upload_to_qdrant(questions: List[dict]):
         print(f"Uploaded {len(vectors)} vectors to Qdrant collection '{settings.QDRANT_COLLECTION_NAME}'.")
     finally:
         # Always close the client asynchronously
+        await qdrant_client.close()
+
+async def add_to_knowledge_base(question: str, answer: str):
+    """
+    Adds a single, human-approved question and answer pair to Qdrant.
+    This is the core of the "self-learning" feedback loop.
+    """
+    qdrant_client = AsyncQdrantClient(url=settings.QDRANT_URL)
+    try:
+        # 1. Get the embedding for the question
+        embedding = await get_embedding(question)
+        
+        # 2. Create a unique ID for this new entry
+        point_id = str(uuid.uuid4().hex)
+        
+        # 3. Create the point structure
+        point = PointStruct(
+            id=point_id,
+            vector=embedding,
+            payload={
+                "question": question,
+                "answer": answer
+            }
+        )
+        
+        # 4. Upsert the new point into the collection
+        await qdrant_client.upsert(
+            collection_name=settings.QDRANT_COLLECTION_NAME,
+            wait=True,
+            points=[point]  # Upsert expects a list of points
+        )
+        
+        print(f"[Self-Learning] Added new QA to Knowledge Base. ID: {point_id}")
+
+    except Exception as e:
+        print(f"[Self-Learning] Error adding to KB: {e}")
+    finally:
+        # Always close the client
         await qdrant_client.close()
 
 async def search_knowledge_base(query: str, top_k: int = 5):

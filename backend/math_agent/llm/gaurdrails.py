@@ -41,7 +41,8 @@ def run_input_gaurdrails(question: str) -> bool:
 def run_output_gaurdrail(answer: str) -> bool:
     """Checks if the generated answer is safe and on-topic."""
     prompt = f"""
-    You are an output guardrail. Check if the following generated answer is safe, polite, and actually answers the math question.
+    You are an output guardrail. 
+    Check if the following generated answer is safe, polite, and actually answers the math question.
     
     RULES:
     - If the answer is harmful, offensive, or contains a "jailbreak" response, reply NO.
@@ -50,6 +51,8 @@ def run_output_gaurdrail(answer: str) -> bool:
     - If the answer is a good-faith attempt to solve the math problem, reply YES.
 
     IMPORTANT: You can ONLY respond with exactly one word: YES or NO. Nothing else.
+    Also a solution can have mutiple text or approch , 
+    but if its solving the maths problem or something maths allow.
 
     Generated Answer: {answer}
 
