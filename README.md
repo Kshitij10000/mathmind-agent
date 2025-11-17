@@ -45,6 +45,23 @@ npm install
 npm run dev
 ```
 
+## File Structure
+
+### Backend (`backend/`)
+
+- `main.py` – FastAPI entrypoint
+- `core/` – shared config
+- `math_agent/` – agents, routers, LLM logic
+- `requirements.txt`
+
+### Frontend (`math-chat-ui/`)
+
+- `src/main.jsx` – React bootstrap
+- `src/components/` – chat UI pieces
+- `src/pages/MathChat.jsx` – main chat page
+- `src/services/api.js` – API client
+- `public/` – static assets
+
 ## Status
 
 ⚠️ Auto-learning feature is work in progress.
