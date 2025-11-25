@@ -20,11 +20,4 @@ app.add_middleware(
 async def root():
     return {'message': 'Welcome to MathMind-Agent'}
 
-@app.post('/math', tags=['Math'])
-async def math(number:int):
-    table = []
-    for i in range(1, 11):
-        table.append(f'{number} x {i} = {number * i}')
-    return {'message': table}
-
 app.include_router(router)

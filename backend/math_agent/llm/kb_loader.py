@@ -92,6 +92,7 @@ async def add_to_knowledge_base(question: str, answer: str):
     """
     qdrant_client = AsyncQdrantClient(url=settings.QDRANT_URL)
     try:
+        
         # 1. Get the embedding for the question
         embedding = await get_embedding(question)
         
@@ -125,9 +126,9 @@ async def add_to_knowledge_base(question: str, answer: str):
 
 async def search_knowledge_base(query: str, top_k: int = 5):
  
-   
     qdrant_client = AsyncQdrantClient(url=settings.QDRANT_URL)
     try:
+        print(f"[KB Search] Querying Qdrant for: {query}")
         query_embedding = await get_embedding(query)
         
         search_result = await qdrant_client.query_points(

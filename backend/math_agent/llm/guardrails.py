@@ -1,4 +1,5 @@
 from langchain.chat_models import init_chat_model
+from typing import List
 
 llm = init_chat_model(
     "gemini-2.5-flash-lite",
@@ -6,11 +7,11 @@ llm = init_chat_model(
 )
 
 # Input gaurdrails check
-def run_input_gaurdrails(question: str) -> bool:
+def run_input_guardrails(question: str) -> bool:
 
-    """Checks if the input question is of math"""
+    """Checks if the input question is about math and allowed."""
 
-    prompt = f"""You are a guardrail for a math tutoring system. Determine if the question should be allowed.
+    prompt = f"""You are a guardrail for a math tutoring system. Determine if the question asked in conversation should be allowed or not.
 
     RULES:
     - If the question has ANYTHING related to mathematics (basic math, advanced math, math in other subjects like physics/economics), reply YES
@@ -18,7 +19,9 @@ def run_input_gaurdrails(question: str) -> bool:
     - If the question contains violent, sexual, harmful, or offensive content, reply NO
     - If the question is completely unrelated to math (like "capital of France", "who is the president"), reply NO
     - Be lenient with math - even if it's mixed with other topics (topics which are not breaking any other rules ), if there's math involved, say YES
-
+    - Also If the question is asking for help with homework, assignments, or test questions related to math, reply YES.
+    - User might ask for explantion of maths concepts too, followup question (if that relates the math topic or is genuine follow up) , allow that as well.
+    
     IMPORTANT: You can ONLY respond with exactly one word: YES or NO. Nothing else.
 
     Question: {question}
@@ -38,7 +41,7 @@ def run_input_gaurdrails(question: str) -> bool:
         return False
         
 # Input gaurdrails check
-def run_output_gaurdrail(answer: str) -> bool:
+def run_output_guardrail(answer: str) -> bool:
     """Checks if the generated answer is safe and on-topic."""
     prompt = f"""
     You are an output guardrail. 
@@ -49,6 +52,7 @@ def run_output_gaurdrail(answer: str) -> bool:
     - If the answer says "I cannot answer this" or is a refusal, reply NO.
     - If the answer is a clear hallucination or random text, reply NO.
     - If the answer is a good-faith attempt to solve the math problem, reply YES.
+    - If the answer is a follow-up explanation or clarification related to the math problem, reply YES.
 
     IMPORTANT: You can ONLY respond with exactly one word: YES or NO. Nothing else.
     Also a solution can have mutiple text or approch , 
@@ -74,5 +78,5 @@ if __name__ == '__main__':
     # Example usage
     question = "Solve for (x) in the equation (2(x+3)=10)"
     context = ""  # Add appropriate context here
-    is_valid = run_output_gaurdrail(question, context)
+    is_valid = run_output_guardrail(question, context)
     print(is_valid)

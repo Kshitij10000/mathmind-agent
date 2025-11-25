@@ -6,4 +6,4 @@ from math_agent.api.agent_endpoints import router as agent_router
 router = APIRouter()
 
 # Include the agent endpoints router (routes already have /agent prefix)
-router.include_router(agent_router, tags=["agent"])
+router.include_router(agent_router, tags=["Agent"])
