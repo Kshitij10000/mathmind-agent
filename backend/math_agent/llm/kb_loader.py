@@ -25,7 +25,7 @@ if collection_exists:
 else:
     print(f"Collection '{settings.QDRANT_COLLECTION_NAME}' does not exist.")
     sync_qdrant_client.create_collection(
-        collection_name=settings.QDRANT_COLLECTION_NAME,  # Use settings instead of hardcoded name
+        collection_name=settings.QDRANT_COLLECTION_NAME, 
         vectors_config=VectorParams(
             size=settings.VECTOR_DIMENSIONS, 
             distance=Distance.COSINE

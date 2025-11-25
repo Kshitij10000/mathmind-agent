@@ -1,24 +1,25 @@
 # backend\math_agent\llm\agent.py
-from typing import TypedDict, Literal
+from typing import TypedDict, Literal, List, Annotated
 from math_agent.llm.services import generate_solution 
 from math_agent.llm.gaurdrails import run_input_gaurdrails, run_output_gaurdrail
 from math_agent.llm.kb_loader import search_knowledge_base , add_to_knowledge_base
 from langgraph.graph import StateGraph, END
 from langgraph.checkpoint.memory import MemorySaver
+from langchain_core.messages import BaseMessage
 from math_agent.llm.mcp_servers import search_web_mcp
 
-# --- 1. Define the Agent's State ---
+#1. Define the Agent's State
 # This is the "memory" that flows between nodes
 class AgentState(TypedDict):
-    question: str # user given question
-    is_valid: bool # gaurdrail results
+    messages: Annotated[List[BaseMessage], "Chat history"]
+    is_safe: bool # gaurdrail results
     route: Literal["kb","web"] # path choosen by the agent
     context: str # info found from web or kb
     answer: str # final answer
     final_answer: str # answer after human intervention    
 
 
-# --- 2. Define the Agent's Nodes ---
+#2. Define the Agent's Nodes
 # Each node is a function that modifies the state.
 
 def input_gaurdrail_node(state: AgentState):
@@ -33,7 +34,7 @@ async def router_node(state: AgentState):
     print("[Router] Checking Knowledge Base...")
     question = state["question"]
     
-    # YOU MUST AWAIT THE ASYNC FUNCTION
+    # await for KB search
     kb_results = await search_knowledge_base(question, top_k=1)
 
     if kb_results:

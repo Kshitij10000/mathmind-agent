@@ -2,6 +2,7 @@ import { useState } from 'react'
 import ChatMessage from '../components/ChatMessage'
 import ChatInput from '../components/ChatInput'
 import { sendMessage, resumeAgent } from '../services/api'
+import './MathChat.css'
 
 function MathChat() {
   const [messages, setMessages] = useState([
@@ -101,18 +102,9 @@ function MathChat() {
   }
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100vh',
-      backgroundColor: '#f8f9fa',
-    }}>
+    <div className="math-chat">
       {/* Messages area */}
-      <div style={{
-        flex: 1,
-        overflowY: 'auto',
-        padding: '20px 0',
-      }}>
+      <div className="messages-area">
         {messages.map((msg, index) => (
           <ChatMessage 
             key={index} 

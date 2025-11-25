@@ -1,0 +1,39 @@
+.math-chat {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: var(--background-color);
+    position: relative;
+  }
+  
+  .math-chat::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 300px;
+    background: radial-gradient(ellipse at top, rgba(37, 99, 235, 0.08), transparent 60%);
+    pointer-events: none;
+  }
+  
+  .messages-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px 0;
+    scroll-behavior: smooth;
+  }
+  
+  .messages-area::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .messages-area::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .messages-area::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+  }
+  

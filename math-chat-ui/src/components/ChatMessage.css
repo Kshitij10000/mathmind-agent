@@ -1,0 +1,144 @@
+.chat-message-container {
+    display: flex;
+    margin: 12px 0;
+    padding: 0 32px;
+    animation: messageSlideIn 0.3s ease-out;
+  }
+  
+  @keyframes messageSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .chat-message-container.user {
+    justify-content: flex-end;
+  }
+  
+  .chat-message-container.ai {
+    justify-content: flex-start;
+  }
+  
+  .chat-message {
+    max-width: 65%;
+    width: auto;
+    padding: 16px 20px;
+    border-radius: 20px;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    line-height: 1.6;
+    font-size: 15px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .chat-message:hover {
+    transform: translateY(-2px);
+  }
+  
+  .chat-message.user {
+    background: var(--user-message-bg);
+    color: var(--user-message-text);
+    box-shadow: var(--shadow-lg);
+    border-bottom-right-radius: 4px;
+  }
+  
+  .chat-message.ai {
+    background: var(--ai-message-bg);
+    color: var(--ai-message-text);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+    border-bottom-left-radius: 4px;
+  }
+  
+  .chat-message.ai:hover {
+    box-shadow: var(--shadow-lg);
+  }
+  
+  .editing-container {
+    width: 95%;
+    padding: 24px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: var(--shadow-xl);
+  }
+  
+  .editing-textarea {
+    width: 100%;
+    min-height: 200px;
+    padding: 20px;
+    border: 2px solid var(--primary-color);
+    border-radius: 12px;
+    font-size: 15px;
+    font-family: inherit;
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+    box-sizing: border-box;
+    background-color: #f8fafc;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+  }
+  
+  .editing-textarea:focus {
+    background-color: #ffffff;
+    border-color: var(--primary-hover);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+  
+  .message-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  
+  .message-button {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .message-button:active {
+    transform: scale(0.98);
+  }
+  
+  .approve-button {
+    background: linear-gradient(135deg, var(--success-color) 0%, var(--success-hover) 100%);
+    color: white;
+  }
+  
+  .approve-button:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+  
+  .cancel-button {
+    background: var(--secondary-color);
+    color: white;
+  }
+  
+  .cancel-button:hover {
+    background: #475569;
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+  
+  .edit-button {
+    background: linear-gradient(135deg, var(--warning-color) 0%, var(--warning-hover) 100%);
+    color: white;
+  }
+  
+  .edit-button:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+  

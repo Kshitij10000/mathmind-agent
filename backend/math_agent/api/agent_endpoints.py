@@ -13,7 +13,7 @@ except ImportError:
 router = APIRouter()
 langgraph_app = build_math_agent()
 
-# --- Define API request/response models ---
+#Define API request/response models
 class AskRequest(BaseModel):
     question: str
 
@@ -51,12 +51,8 @@ async def start_agent_run(request: AskRequest):
             generated_answer = final_state.get("answer", "Graph finished without answer.")
 
     except GraphInterrupt:
-        # This is the expected path! The graph is now paused.
-        # We need to get the state *at the pause*.
-        # We can't get it from the exception, so we get it from the checkpointer.
+        # On interrupt, retrieve the snapshot from the checkpointer
         snapshot = langgraph_app.checkpointer.get(config)
-        
-        # The 'answer' is in the state saved *just before* the interrupt
         generated_answer = snapshot.values.get("answer", "Error: Paused but no answer found.")
     
     return AskResponse(

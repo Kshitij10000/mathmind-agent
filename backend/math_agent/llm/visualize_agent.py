@@ -5,8 +5,7 @@ def save_agent_graph():
     Builds the math agent and saves a visualization of its graph to a PNG file.
     """
     try:
-        # Build the agent application
-        # Note: This will also try to display the image if run in an IPython environment.
+        # Build the math agent
         app = build_math_agent()
 
         # Get the graph visualization as PNG bytes

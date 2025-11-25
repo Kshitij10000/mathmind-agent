@@ -1,21 +1,12 @@
-import './index.css'
+import './App.css'
 import Sidebar from './components/Sidebar'
 import MathChat from './pages/MathChat'
 
 function App() {
   return (
-    <div style={{
-      display: 'flex',
-      width: '100%',
-      height: '100vh',
-      overflow: 'hidden',
-    }}>
+    <div className="app-container">
       <Sidebar />
-      <div style={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-      }}>
+      <div className="main-content">
         <MathChat />
       </div>
     </div>

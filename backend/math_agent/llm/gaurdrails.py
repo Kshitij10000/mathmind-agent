@@ -72,7 +72,6 @@ def run_output_gaurdrail(answer: str) -> bool:
 
 if __name__ == '__main__':
     # Example usage
-  
     question = "Solve for (x) in the equation (2(x+3)=10)"
     context = ""  # Add appropriate context here
     is_valid = run_output_gaurdrail(question, context)

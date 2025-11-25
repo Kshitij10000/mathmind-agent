@@ -1,35 +1,45 @@
 import logo from '/logo.png'
+import './Sidebar.css'
 
 function Sidebar() {
     return (
-        <div style={{
-            width: '280px',
-            backgroundColor: '#f0f0f0',
-            color: 'white',
-            padding: '20px',
-            height: '100vh',
-            flexDirection: 'column',
-            alignItems: 'center',
-            boxShadow: '2px 0 10px rgba(0, 0, 0, 0.1)',
-        }}>
-        <img 
-        src={logo} 
-        alt="MathMind Logo" 
-        style={{ width: '60px', height: '60px', marginBottom: '20px' }}
-        />
-        <h1 style={{ fontSize: '24px', marginBottom: '30px' }}>MathMind</h1>
-        <div style={{
-            width: '100%',
-            padding: '15px',
-            backgroundColor: '#34495e',
-            borderRadius: '8px',
-            marginTop: '20px'
-        }}>
-            <p style={{ fontSize: '14px', opacity: 0.8 }}>
-            Your AI-powered math assistant
-            </p>
-      </div>
-    </div>
+        <div className="sidebar">
+            <div className="sidebar-header">
+                <img
+                    src={logo}
+                    alt="MathMind Logo"
+                    className="sidebar-logo"
+                />
+                <h1 className="sidebar-title">MathMind</h1>
+                <p className="sidebar-subtitle">AI Mathematical Assistant</p>
+            </div>
+
+            <div className="sidebar-content">
+                <div className="sidebar-section">
+                    <h3 className="section-title">About</h3>
+                    <p className="section-description">
+                        Advanced AI-powered platform for solving complex mathematical problems with step-by-step explanations and real-time feedback.
+                    </p>
+                </div>
+
+                <div className="sidebar-section">
+                    <h3 className="section-title">Features</h3>
+                    <ul className="features-list">
+                        <li>Problem-solving assistance</li>
+                        <li>Step-by-step solutions</li>
+                        <li>Interactive feedback</li>
+                        <li>Solution verification</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div className="sidebar-footer">
+                <div className="status-indicator">
+                    <span className="status-dot"></span>
+                    <span className="status-text">System Active</span>
+                </div>
+            </div>
+        </div>
     )
 }
 
