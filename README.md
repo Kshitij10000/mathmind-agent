@@ -37,12 +37,37 @@ Create `.env` file in `backend/` folder (copy from `.env.development` and add yo
 uvicorn main:app --reload
 ```
 
+### Notes for recent updates (important)
+
+- Fixed a bug in the agent where calling the /agent/chat route could raise a KeyError when the agent was invoked with a plain question and no chat `messages` history. The agent now gracefully falls back to using the provided `question` when a `messages` list is not present.
+- The input guardrail signature was simplified to accept a single question string (instead of expecting a list/different parameter), and the agent nodes were updated to support both chat-history and question-only invocation.
+
+These changes make the API robust when the frontend (or any client) sends a single question to the agent.
+
 ### 3. Setup Frontend
 
 ```bash
 cd math-chat-ui
 npm install
 npm run dev
+```
+
+### Running backend tests (new)
+
+There are unit tests added for some of the LLM agent nodes (to avoid calling external services these tests stub functions). Run them from the `backend` folder.
+
+Windows (cmd.exe)
+```cmd
+cd /d path\to\MathMind-Agent\backend
+venv\Scripts\activate
+python -m pytest tests/test_agent_nodes.py
+```
+
+If you created your environment as `.venv` instead of `venv` use the `.venv` path:
+```cmd
+cd /d path\to\MathMind-Agent\backend
+.venv\Scripts\activate
+python -m pytest tests/test_agent_nodes.py
 ```
 
 ## File Structure
@@ -63,6 +88,8 @@ npm run dev
 - `public/` – static assets
 
 ## Status
+
+✅ Recent bugfixes: KeyError on missing `messages` has been fixed and agent nodes are now robust to question-only invocations.
 
 ⚠️ Auto-learning feature is work in progress.
 
